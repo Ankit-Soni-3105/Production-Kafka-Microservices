@@ -239,7 +239,7 @@ export const loginUserController = async (req, res) => {
 
         const token = await user.generateAuthToken();
 
-        await sendUserEvent("user-login", {// send user to kafka 
+        await sendUserEvent("user-login", {
             userId: user._id.toString(),
             email: user.email,
             username: user.username,
@@ -335,7 +335,6 @@ export const verifyPuzzle = async (req, res) => {
     );
     return res.json({ success: true, message: 'Puzzle solved!' });
 };
-
 
 export const verifyUserByOtpController = async (req, res) => {
     const errors = validationResult(req);

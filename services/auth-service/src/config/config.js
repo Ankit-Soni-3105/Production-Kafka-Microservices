@@ -10,7 +10,8 @@ const _config = {
     REDIS_PORT: process.env.REDIS_PORT,
     REDIS_PASSWORD: process.env.REDIS_PASSWORD,
 
-
+    KAFKA_BROKER: process.env.KAFKA_BROKER,
+    
     EMAIL_SERVICES: process.env.EMAIL_SERVICES,
     EMAIL_HOST: process.env.EMAIL_HOST,
     EMAIL_PORT: process.env.EMAIL_PORT,
