@@ -11,6 +11,48 @@
 - MongoDB is initialized with replica sets and secure keyfiles.
 - Monitoring stack includes Prometheus (metrics), Grafana (dashboards), and Node Exporter.
 
+**Cluster & Broker Details:**
+- The system uses Docker Compose to orchestrate a multi-container environment for microservices, databases, brokers, and monitoring.
+- **Zookeeper Cluster:**
+  - 3 containers: `zookeeper-1`, `zookeeper-2`, `zookeeper-3`
+  - Ports: 2181, 2182, 2183 (each node exposes a unique port)
+  - Each Zookeeper node is configured for clustering and health checks.
+  - Used as a dependency for Kafka brokers.
+- **Kafka Cluster:**
+  - 3 brokers: `kafka-1`, `kafka-2`, `kafka-3`
+  - Ports:
+    - `kafka-1`: 9092 (host), 29092 (internal)
+    - `kafka-2`: 9093 (host), 29093 (internal)
+    - `kafka-3`: 9094 (host), 29094 (internal)
+  - Each broker depends on all Zookeeper nodes (ensuring healthy cluster before startup).
+  - Replication factor: 3, partitions: 128, min in-sync replicas: 2
+  - Brokers are configured for high availability and data durability.
+- **Kafka UI:**
+  - Container: `kafka-ui`
+  - Port: 8080
+  - Provides a web interface for managing Kafka clusters.
+  - Depends on all Kafka brokers.
+- **Redis Cluster:**
+  - 6 nodes: 3 masters (`redis-node-1`, `redis-node-2`, `redis-node-3`) and 3 replicas
+  - Ports: 7001-7006
+  - Each node is configured for clustering, persistence, and memory management.
+- **Other Services:**
+  - MongoDB (with replica set and keyfile authentication)
+  - Auth and Message microservices (see previous overview for details)
+  - Monitoring stack: Prometheus, Grafana, Node Exporter
+  - Nginx for SSL termination and reverse proxy
+- **Dependencies:**
+  - Kafka brokers depend on Zookeeper cluster
+  - Kafka UI depends on Kafka brokers
+  - Microservices depend on Kafka, MongoDB, Redis
+  - Monitoring tools scrape metrics from all major containers
+- **Networks & Volumes:**
+  - All containers are connected via `app-network` for internal communication
+  - Persistent volumes for data durability (Zookeeper, Kafka, Redis, MongoDB)
+- **Healthchecks & Resource Limits:**
+  - Each major container has health checks for reliability
+  - Resource limits and reservations are set for memory and CPU to ensure stability
+
 ## 3. Folder & File Structure Overview
 
 ### Root Level
